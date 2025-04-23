@@ -31,7 +31,7 @@ export const SearchBar = ({ onSearch }: SearchBarProps) => {
             </button>
           </div>
         </div>
-        <div className="flex items-center justify-between px-4 mt-2">
+        {/* <div className="flex items-center justify-between px-4 mt-2">
           <button type="button" className="flex items-center gap-1 text-zinc-400 hover:text-white transition-colors">
             <GemIcon size={14} />
             <span className="text-xs">Advanced</span>
@@ -46,12 +46,8 @@ export const SearchBar = ({ onSearch }: SearchBarProps) => {
             <Paperclip size={14} />
             <span className="text-xs">Attach</span>
           </button>
-        </div>
-        <div className="text-center mt-1">
-          <p className="text-xs text-zinc-500">
-            By using you.com, you agree to our <a href="#" className="text-blue-400 hover:underline">Terms</a> & <a href="#" className="text-blue-400 hover:underline">Privacy Policy</a>
-          </p>
-        </div>
+        </div> */}
+       
       </form>
     </div>
   );

@@ -11,6 +11,8 @@ const SYSTEM_PROMPT = `You are a medical AI assistant. Your task is to:
 4. Include min/max/step values for slider questions
 5. Generate 7-8 questions that a doctor would typically ask
 6. After all questions are answered, provide a preliminary assessment and recommendations
+7. Prepare those questions based on the users previous answers
+8. please include any icons for options generated in the options array related to the question
 
 IMPORTANT: Return ONLY the JSON object, without any markdown formatting or additional text.
 

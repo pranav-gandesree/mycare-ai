@@ -28,7 +28,7 @@ export const Sidebar = () => {
         </Button>
       </div>
 
-      <div className="mt-auto">
+      {/* <div className="mt-auto">
         <div className="px-4 py-3">
           <div className="bg-zinc-800/50 rounded-lg p-5">
             <p className="text-sm text-zinc-400 mb-4">Sign in for free to save your chat history</p>
@@ -65,7 +65,7 @@ export const Sidebar = () => {
             More
           </Button>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
