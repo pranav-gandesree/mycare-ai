@@ -1,9 +1,10 @@
-import { Sidebar } from "@/components/layout/Sidebar";
+
+
 import { Header } from "@/components/layout/Header";
 import { ProductivitySection } from "@/components/ProductivitySection";
 import { SearchBar } from "@/components/SearchBar";
 import { SearchResponse } from "@/components/SearchResponse";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Plus } from "lucide-react";
 
@@ -51,7 +52,8 @@ const Index = () => {
 
   const fetchFromAgent = async (input: string, chatId: string) => {
     try {
-      const response = await fetch("https://pranav8267.app.n8n.cloud/webhook/pregnancy-agent", {
+      console.log("fetching from agent", import.meta.env.VITE_N8N_WEBHOOK_URL);
+      const response = await fetch( import.meta.env.VITE_N8N_WEBHOOK_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -70,6 +72,24 @@ const Index = () => {
       const parsed = JSON.parse(cleaned);
       console.log("parsed response is", parsed);
 
+
+            await fetch("http://localhost:3000/api/tools", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          questionId: parsed.questionId || null,
+          mainQuestion: parsed.question || "",
+          question: parsed.toolLog.question ||"",
+          answer: parsed.toolLog?.answer || "",
+          type: parsed.type || "",
+          options: parsed.options || [],
+        }),
+      });
+
+      
+
       setChats(prevChats => {
         return prevChats.map(chat => {
           if (chat.id !== chatId) return chat;
@@ -81,7 +101,20 @@ const Index = () => {
               currentQuestion: null,
               finalAssessment: parsed.finalDiagnosis
             };
-          } else {
+          } else if (parsed.type === 'summary') {
+            // summary response — include title, summary, and nextAction
+            return {
+              ...chat,
+              currentQuestion: {
+                question: parsed.nextAction,     
+                questionId: parsed.questionId,
+                type: parsed.type,               // "summary"
+                title: parsed.title,             // your “Hey, here’s what I’ve gathered…” heading
+                summary: parsed.summary          // the actual summary text
+              }
+            };
+          }
+          else {
             return {
               ...chat,
               currentQuestion: {
@@ -104,6 +137,105 @@ const Index = () => {
     }
   };
 
+
+
+
+
+
+
+
+
+  // const fetchFromAgent = async (input: string, chatId: string) => {
+  //   try {
+  //     console.log("fetching from agent", import.meta.env.VITE_N8N_WEBHOOK_URL);
+      
+  //     const response = await fetch(import.meta.env.VITE_N8N_WEBHOOK_URL, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ chatInput: input }),
+  //     });
+  
+  //     if (!response.ok) {
+  //       throw new Error("Failed to fetch response from n8n");
+  //     }
+  
+  //     const data = await response.text();
+  //     const parsedArray = JSON.parse(data);
+  //     const rawOutput = parsedArray[0]?.output || "{}";
+  //     const cleaned = rawOutput.replace(/```json|```/g, "").trim();
+  //     const parsed = JSON.parse(cleaned);
+  
+  //     console.log("parsed response is", parsed);
+  
+  //     // ✅ Send to backend
+  //     await fetch("http://localhost:3000/api/tools", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         questionId: parsed.questionId || null,
+  //         mainQuestion: parsed.title || parsed.mainQuestion || "",
+  //         question: parsed.question || parsed.nextAction || "",
+  //         answer: parsed.toolLog?.answer || "",
+  //         type: parsed.type || "",
+  //         options: parsed.options || [],
+  //       }),
+  //     });
+  
+  //     // ✅ Update frontend chat state
+  //     setChats(prevChats =>
+  //       prevChats.map(chat => {
+  //         if (chat.id !== chatId) return chat;
+  
+  //         if (parsed.finalDiagnosis) {
+  //           return {
+  //             ...chat,
+  //             messages: [
+  //               ...chat.messages,
+  //               { role: "assistant", content: parsed.finalDiagnosis },
+  //             ],
+  //             currentQuestion: null,
+  //             finalAssessment: parsed.finalDiagnosis,
+  //           };
+  //         } else if (parsed.type === "summary") {
+  //           return {
+  //             ...chat,
+  //             currentQuestion: {
+  //               question: parsed.nextAction,
+  //               questionId: parsed.questionId,
+  //               type: parsed.type,
+  //               title: parsed.title,
+  //               summary: parsed.summary,
+  //             },
+  //           };
+  //         } else {
+  //           return {
+  //             ...chat,
+  //             currentQuestion: {
+  //               question: parsed.question,
+  //               questionId: parsed.questionId,
+  //               type: parsed.type,
+  //               options: parsed.options,
+  //               min: parsed.min,
+  //               max: parsed.max,
+  //               step: parsed.step,
+  //             },
+  //           };
+  //         }
+  //       })
+  //     );
+  
+  //     setIsLoading(false);
+  //   } catch (error) {
+  //     console.error("Error fetching from agent:", error);
+  //     setIsLoading(false);
+  //   }
+  // };
+  
+  
   const handleSearch = async (query: string) => {
     if (!activeChatId) {
       const newChat: Chat = {

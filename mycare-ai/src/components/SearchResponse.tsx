@@ -19,9 +19,11 @@ import {
 } from "./ui/popover";
 
 interface Question {
+  title?: string;
   question: string;
   questionId: string;
   type: string;
+  summary?: string;
   options?: string[];
   min?: number;
   max?: number;
@@ -179,6 +181,18 @@ export const SearchResponse = ({
             ))}
           </RadioGroup>
         );
+
+
+        case 'summary':
+          return (
+            <div className="space-y-2">
+              {/* <h3 className="text-lg font-semibold text-white">{question.title ?? "Summary"}</h3> */}
+              <p className="text-sm text-zinc-300">
+                {question.summary ?? "No summary provided."}
+              </p>
+            </div>
+          );
+        
 
       case 'multi-select':
         return (

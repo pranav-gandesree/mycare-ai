@@ -1,0 +1,24 @@
+
+
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model tools {
+  id           Int      @id @default(autoincrement())
+  questionId   String   // Unique ID for tracking questions (e.g., "medications-supplements")
+  mainQuestion String   // Main or parent question text
+  question     String   // Actual question text shown to the user
+  answer       String   // User's answer
+  type         String   // Type of question (e.g., "yes-no", "summary")
+  options      String[] 
+
+  @@map("tools") 
+}
